@@ -1,0 +1,33 @@
+name: Trigger xbsl.io Deploy
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - docs/**
+      - .github/workflows/trigger-site-deploy.yml
+  workflow_dispatch:
+
+jobs:
+  dispatch:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Trigger xbsl.io deploy workflow
+        env:
+          REPO_DISPATCH_TOKEN: ${{ secrets.XBSL_IO_REPO_DISPATCH_TOKEN }}
+        run: |
+          if [ -z "$REPO_DISPATCH_TOKEN" ]; then
+            echo "XBSL_IO_REPO_DISPATCH_TOKEN secret is required."
+            exit 1
+          fi
+
+          curl -L \
+            -X POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer ${REPO_DISPATCH_TOKEN}" \
+            https://api.github.com/repos/avolkov-git/xbsl.io/dispatches \
+            -d '{"event_type":"xbsl-docs-updated"}'
