@@ -1,0 +1,104 @@
+---
+title: Прогресс
+description: Пример ореализации прогресс-бара на html-контейнере.
+---
+
+# Реализация "Прогресса" на контейнере html
+
+<HighlightedCodeTabs
+  tabs={[
+    {
+      label: "yaml",
+      lang: "yaml",
+      code: String.raw`ВидЭлемента: КомпонентИнтерфейса
+Ид: 01603afa-4dad-46f7-9fb5-7e4afc8a17eb
+Имя: ПрогрессБар
+ОбластьВидимости: Глобально
+Наследует:
+    Тип: ПроизвольныйКомпонент
+    Содержимое:
+        Тип: КонтейнерHtml
+        Имя: Хтмл
+        БезопасныйРежим: Ложь
+        Высота: 30
+        ПослеЗагрузкиСодержимого: ХтмлПослеЗагрузкиСодержимого
+        РастягиватьПоВертикали: Ложь
+        Содержимое: "<div id=\"progressBar\" style=\"width: 100%; background-color: #e3e3e3; border-radius: 8px; overflow: hidden; position: relative; height: 30px;\">\n    <div id=\"progressFill\" style=\"height: 100%; background-color: #4caf50; width: 0; transition: width 0.4s;\"></div>\n    <div id=\"progressDashedLine\" style=\"position: absolute; top: 0; bottom: 0; width: 4px; background-color: transparent; border-left: 4px dashed black; display: none;\"></div>\n    <div id=\"progressText\" style=\"position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-weight: bold; color: #000;\">\n        Загрузка...\n    </div>\n</div>\n\n<script>\n    function updateProgressBar(percentage, label, fillColor = \'#4caf50\', dashedLineAt = null, dashedLineColor = \'red\') {\n        const progressFill = document.getElementById(\'progressFill\');\n        const progressText = document.getElementById(\'progressText\');\n        const progressDashedLine = document.getElementById(\'progressDashedLine\');\n        \n        // Устанавливаем ширину заполнения и цвет\n        progressFill.style.width = percentage + \'%\';\n        progressFill.style.backgroundColor = fillColor;\n        \n        // Обновляем текст\n        progressText.textContent = label;\n\n        // Логика для пунктирной черты\n        if (dashedLineAt !== null && dashedLineAt >= 0 && dashedLineAt <= 100) {\n            progressDashedLine.style.left = dashedLineAt + \'%\';\n            progressDashedLine.style.borderLeftColor = dashedLineColor;\n            progressDashedLine.style.display = \'block\';\n        } else {\n            progressDashedLine.style.display = \'none\';\n        }\n    }\n</script>"
+        ШиринаВКолонках: =ШиринаВКолонках
+Свойства:
+    -
+        Имя: Значение
+        Тип: Число
+    -
+        Имя: Максимум
+        Тип: Число
+    -
+        Имя: Подпись
+        Тип: Строка
+    -
+        Имя: ЗначениеМетки
+        Тип: Число
+    -
+        Имя: ЦветЗаполнения
+        Тип: Цвет?
+    -
+        Имя: ЦветМетки
+        Тип: Цвет?
+    -
+        Имя: СодержимоеЗагружено
+        Тип: Булево`,
+    },
+    {
+      label: "xbsl",
+      lang: "xbsl",
+      code: String.raw`@Глобально
+метод Обновить(Значение: Число? = Неопределено, ЗначениеМетки: Число? = Неопределено, Максимум: Число? = Неопределено, 
+        Подпись: Строка? = Неопределено, ЦветЗаполнения: Цвет? = Неопределено, ЦветМетки: Цвет? = Неопределено)
+    
+    этот.Значение = Значение ?? этот.Значение
+    этот.Максимум = Максимум ?? этот.Максимум
+    этот.Подпись = Подпись ?? этот.Подпись
+    этот.ЗначениеМетки = ЗначениеМетки ?? этот.ЗначениеМетки
+    этот.ЦветЗаполнения = ЦветЗаполнения ?? этот.ЦветЗаполнения
+    этот.ЦветМетки = ЦветМетки ?? этот.ЦветМетки
+    
+    если СодержимоеЗагружено
+        ПередатьПараметрыВХтмл()
+    иначе
+        // Сработает автоматом после загрузки содержимого
+    ;
+;
+
+метод ПередатьПараметрыВХтмл()
+    если Максимум == 0
+        Максимум = 100
+    ;
+    если ЦветЗаполнения == Неопределено
+        ЦветЗаполнения = Цвета.Зеленый
+    ;
+    если ЦветМетки == Неопределено
+        ЦветМетки = Цвета.Красный
+    ;
+    
+    знч Параметры = <Булево|ОбъектJs|Число|Строка|?>[]
+    Параметры.Добавить((Значение * 100 / Максимум).Округлить()) // Значение в %
+    Параметры.Добавить(Подпись) // Подпись
+    Параметры.Добавить(Служебный.ЦветВСтроку(ЦветЗаполнения)) // Цвет полосы
+    если ЗначениеМетки != 0
+        Параметры.Добавить((ЗначениеМетки * 100 / Максимум).Округлить()) // Положение метки в %
+        Параметры.Добавить(Служебный.ЦветВСтроку(ЦветМетки)) // Цвет фона метки
+    ;
+    попытка
+        Компоненты.Хтмл.ВызватьМетод("updateProgressBar", Параметры)
+    поймать Исключение: Исключение
+        // Если хтмл скрыт, например на другой вкладке, то его содержимое может быть ещё не загружено и вызов методов даст ошибку
+    ;
+;
+
+метод ХтмлПослеЗагрузкиСодержимого(Источник: КонтейнерHtml, Событие: СобытиеКомпонента)
+    СодержимоеЗагружено = Истина
+    ПередатьПараметрыВХтмл()
+;`,
+    },
+  ]}
+/>
