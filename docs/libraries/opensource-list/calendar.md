@@ -12,8 +12,6 @@ description: Бесплатная библиотека для работы с к
 
 Демонстрационное приложение [расположено тут](https://calendar.1cmycloud.com/applications/calendar-demo)
 
-Репозиторий с исходным кодом [расположен тут](https://gitflic.ru/project/enterprise_element_community/calendar)
-
 В демонстрационном приложении есть возмоность посмотреть оба варианта дизайна
 
 **Звезды, форки и помощь в доработке приветствуются**
@@ -59,3 +57,5 @@ description: Бесплатная библиотека для работы с к
 | ИмяФайла | Версия | Совместимость | Дата релиза |
 |----------|---------------|-------------|
 | [calendar 1.0.1.xlib](https://gitflic.ru/project/enterprise_element_community/calendar/release/82e9a083-3789-4ecf-8275-eb53fc304b35/9232bd3e-ea48-4708-ab6e-3bb0395c18f3/download) | 1.0.1 | 9.0 | 04.06.2025  |
+
+Репозиторий с исходным кодом [расположен тут](https://gitflic.ru/project/enterprise_element_community/calendar)
