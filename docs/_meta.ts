@@ -5,10 +5,6 @@ const meta: MetaRecord = {
     title: "Библиотеки",
     type: "page",
   },
-  "vs-code-extension": {
-    title: "Расширение",
-    type: "page",
-  },
   examples: {
     title: "Прикладные примеры",
     type: "page",
